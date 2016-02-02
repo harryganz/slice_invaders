@@ -1,1 +1,12 @@
+/* Set body font and bg styles */
+body {
+  font-size: 16px;
+  background-image: url('../img/grid-bg.svg')
+}
 
+/* Container Styles */
+#container {
+  width: 75%;
+  margin: 0 auto;
+  background-color: #FFFFFF;
+}
