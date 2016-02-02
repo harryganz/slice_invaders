@@ -23,10 +23,12 @@ A game in the style of space invaders in which you must destroy slices of pizzas
 *  I want to see the slices move down the screen
 *  I want to fire projectiles at pizza slices
 *  I want pizza slices to disappear when I fire projectiles at them
+* I want two ships firing projectiles, one for each use
 * I want a way to keep track of my score
-*  I want my score to go up when I hit a pizza slice with a projectile
-*  I want pizza slices to explode when hit
+* I want my score to go up when I hit a pizza slice with a projectile
+* I want pizza slices to explode when hit
 * I want the game to end when a pizza slice reaches the bottom of the screen
-* I want to see the list of high scores
+* I want a win screen for showing who won and the scores
+* I want to see a list of high scores
 * I want to be able to enter my initials for my high score
 * I want to be able to restart the game when it ends
