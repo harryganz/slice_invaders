@@ -6,7 +6,7 @@ body {
 
 /* Container Styles */
 #container {
-  width: 75%;
+  width: 1000px;
   margin: 0 auto;
   background-color: #FFFFFF;
 }
@@ -21,4 +21,38 @@ body {
   line-height: 2em;
   text-align: center;
   vertical-align: center;
+}
+
+/* Main Styles */
+#main {
+  padding: 1em;
+  vertical-align: top;
+}
+
+#controls, #game-window {
+  display: inline-block;
+}
+
+/* Controls list styles */
+#controls {
+  width: 225px;
+  background-color: #ddd;
+  vertical-align: top;
+  padding: 1em;
+  margin-right: 1em;
+}
+
+.control-list {
+  text-indent: -1em;
+  list-style: none;
+  font-size: 1.25em;
+  line-height: 1.75em;
+}
+
+/* Game window styles */
+#game-window {
+  width: 600px;
+  height: 600px;
+  background-color: #000;
+  vertical-align: middle;
 }
