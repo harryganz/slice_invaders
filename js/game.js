@@ -3,6 +3,7 @@
 // Html Elements
 var $gameWindow = $();
 var $startBtn = $();
+var $gameOver = $();
 
 // Game Elements
 var $ship = $();
@@ -105,6 +106,8 @@ var game = {
 function initializeBoard(){
   // Hide the start button
   $startBtn.hide();
+  // Hide gameOver div
+  $gameOver.hide();
   // Run the start method of the game
   game.start($gameWindow.width(), $gameWindow.height());
   // Create the ship object
@@ -150,6 +153,15 @@ function drawSlices(slices){
   });
 }
 
+// On game over display game over div
+function gameOver(){
+  // Clear all game elements
+  $ship.remove();
+  $('.slice').remove();
+  $startBtn.show();
+  $gameOver.show();
+}
+
 // Handler for the start button
 function startHandler(event){
   initializeBoard();
@@ -183,6 +195,7 @@ function gameLoop(){
   }
   if(game.isOver()){
     window.clearInterval(gameLoopId);
+    gameOver();
   }
   counter++;
 }
@@ -192,6 +205,7 @@ $(document).ready(function(){
   // Load html elements
   $gameWindow = $('#game-window');
   $startBtn = $('#start-btn');
+  $gameOver = $('#game-over');
   // On click run the start handler
   $startBtn.click(startHandler);
 
