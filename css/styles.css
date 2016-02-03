@@ -55,6 +55,7 @@ body {
   height: 600px;
   background-color: #000;
   vertical-align: middle;
+  position: relative;
 }
 
 #start-btn {
@@ -75,4 +76,10 @@ body {
 
 #start-btn:active {
   border: 2px solid #000;
+}
+
+/* Ship styles */
+.ship {
+  position: absolute;
+  background-color: #f00;
 }
