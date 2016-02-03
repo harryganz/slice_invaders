@@ -1,8 +1,11 @@
 (function() {
-// 'use strict';
+'use strict';
 // Html Elements
 var $gameWindow;
 var $startBtn;
+
+// Game Elements
+var $ship;
 
 function Ship(x, y, width){
   this.x = x || 0;
@@ -43,11 +46,34 @@ var game = {
   }
 };
 
-function startHandler(event){
+// Initialize board
+function initializeBoard(){
   // Hide the start button
   $startBtn.hide();
   // Run the start method of the game
-  game.start();
+  game.start($gameWindow.width(), $gameWindow.height());
+  // Create the ship object
+  $ship = $('<div class="ship"></div>');
+  // Append the ship to the board
+  $gameWindow.append($ship);
+  // Draw the ship
+  drawShip(game.ship);
+}
+
+// Draw the ship
+// Has an absolute position relative to the game board
+function drawShip(ship){
+  $ship.css('bottom', 0).css('left', ship.x);
+}
+
+// Draw the game and all its objects
+function drawGame(game) {
+  drawShip(game.ship);
+}
+
+// Handler for the start button
+function startHandler(event){
+  initializeBoard();
 }
 
 $(document).ready(function(){
