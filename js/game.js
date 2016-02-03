@@ -83,7 +83,17 @@ var game = {
   moveSlices: function(dy){
     // Move all the slices down by dx
     this.slices.forEach(function(el){
-      el.move(el.x, el.y+dy);
+      var yAfterMove = el.y+dy;
+      if(yAfterMove <= 0){
+        el.move(el.x, 0);
+      } else {
+        el.move(el.x, el.y+dy);
+      }
+    });
+  },
+  isOver: function(){
+    return this.slices.some(function(el){
+      return el.y <= 0;
     });
   }
 };
@@ -105,7 +115,7 @@ function initializeBoard(){
   // On keypress run the moveShip handler
   $(document).on('keydown', moveShip);
   // Start the game loop id
-  gameLoopId = window.setInterval(gameLoop, 1000);
+  gameLoopId = window.setInterval(gameLoop, 100);
 }
 
 // Draw the ship
@@ -162,6 +172,9 @@ function moveShip(event){
 function gameLoop(){
   game.moveSlices(-10);
   drawSlices(game.slices);
+  if(game.isOver()){
+    window.clearInterval(gameLoopId);
+  }
 }
 
 $(document).ready(function(){
