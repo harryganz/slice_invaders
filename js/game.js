@@ -17,16 +17,34 @@ function Ship(x, y, width, height){
     this.y = y || 0;
   };
   this.setWidth = function(width){
-    this.width = width || 1;
+    this.width = width;
   };
   this.setHeight = function(height){
-    this.height = height || 1;
+    this.height = height;
+  };
+}
+
+function Slice(x, y, width, height){
+  this.x = x || 0;
+  this.y = y || 0;
+  this.width = width || 1;
+  this.height = height || 1;
+  this.move = function(x, y){
+    this.x = x || 0;
+    this.y = y || 0;
+  };
+  this.setWidth = function(width){
+    this.width = width;
+  };
+  this.setHeight = function(height){
+    this.height = height;
   };
 }
 
 // Game object
 var game = {
   ship: {},
+  slices: [],
   width: 0,
   height: 0,
   start: function(width, height){
@@ -47,6 +65,15 @@ var game = {
     } else {
       this.ship.move(xAfterMove);
     }
+  },
+  addSlice: function(){
+    // Create a new slice and place it in a random
+    // place at the top of the game
+    var slice = new Slice(0, 0, 20, 20);
+    var randomX = Math.random()*(this.width - slice.width);
+    slice.move(randomX, (this.height - slice.height));
+    // Push it to the slices array
+    this.slices.push(slice);
   }
 };
 
@@ -57,7 +84,7 @@ function initializeBoard(){
   // Run the start method of the game
   game.start($gameWindow.width(), $gameWindow.height());
   // Create the ship object
-  $ship = $('<div class="ship"></div>');
+  $ship = $('<div class="ship">');
   // Append the ship to the board
   $gameWindow.append($ship);
   // Draw the ship
