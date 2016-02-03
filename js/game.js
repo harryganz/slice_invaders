@@ -7,8 +7,11 @@ var $startBtn = $();
 // Game Elements
 var $ship = $();
 
-// Game loop id
+// Game loop info
 var gameLoopId = 0;
+var timeout = 333; //ms
+var counter = 1;
+var addSliceInterval = 2000; //ms
 
 function Ship(x, y, width, height){
   this.x = x || 0;
@@ -57,8 +60,8 @@ var game = {
     // Create a new ship and add make it this.ship
     // Place in center of board
     this.ship = new Ship(this.width/2, 0, 20, 20);
-    // Add 3 slices to slices array
-    for(var i = 0; i < 3; this.addSlice(), i++);
+    // Add 1 slice to slices array
+    this.addSlice();
   },
   moveShip: function(dx){ // Move ship by dx on board
     // If ship will be off the board move to edge of board
@@ -115,7 +118,7 @@ function initializeBoard(){
   // On keypress run the moveShip handler
   $(document).on('keydown', moveShip);
   // Start the game loop id
-  gameLoopId = window.setInterval(gameLoop, 100);
+  gameLoopId = window.setInterval(gameLoop, timeout);
 }
 
 // Draw the ship
@@ -170,11 +173,18 @@ function moveShip(event){
 
 // Animation loop
 function gameLoop(){
+  // Move slices in game obj
   game.moveSlices(-10);
+  // Redraw slices
   drawSlices(game.slices);
+  // Add a slice once per addSliceInterval
+  if(counter % Math.round(addSliceInterval/timeout) === 0){
+    game.addSlice();
+  }
   if(game.isOver()){
     window.clearInterval(gameLoopId);
   }
+  counter++;
 }
 
 $(document).ready(function(){
