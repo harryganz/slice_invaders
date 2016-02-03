@@ -83,3 +83,9 @@ body {
   position: absolute;
   background-color: #f00;
 }
+
+/* Slice Styles */
+.slice {
+  position: absolute;
+  background-color: #0f0;
+}
