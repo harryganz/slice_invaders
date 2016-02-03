@@ -3,12 +3,16 @@
 // Html Elements
 var $gameWindow = $();
 var $startBtn = $();
+var $gameOver = $();
 
 // Game Elements
 var $ship = $();
 
-// Game loop id
+// Game loop info
 var gameLoopId = 0;
+var timeout = 333; //ms
+var counter = 1;
+var addSliceInterval = 2000; //ms
 
 function Ship(x, y, width, height){
   this.x = x || 0;
@@ -57,8 +61,8 @@ var game = {
     // Create a new ship and add make it this.ship
     // Place in center of board
     this.ship = new Ship(this.width/2, 0, 20, 20);
-    // Add 3 slices to slices array
-    for(var i = 0; i < 3; this.addSlice(), i++);
+    // Add 1 slice to slices array
+    this.addSlice();
   },
   moveShip: function(dx){ // Move ship by dx on board
     // If ship will be off the board move to edge of board
@@ -83,7 +87,17 @@ var game = {
   moveSlices: function(dy){
     // Move all the slices down by dx
     this.slices.forEach(function(el){
-      el.move(el.x, el.y+dy);
+      var yAfterMove = el.y+dy;
+      if(yAfterMove <= 0){
+        el.move(el.x, 0);
+      } else {
+        el.move(el.x, el.y+dy);
+      }
+    });
+  },
+  isOver: function(){
+    return this.slices.some(function(el){
+      return el.y <= 0;
     });
   }
 };
@@ -92,6 +106,8 @@ var game = {
 function initializeBoard(){
   // Hide the start button
   $startBtn.hide();
+  // Hide gameOver div
+  $gameOver.hide();
   // Run the start method of the game
   game.start($gameWindow.width(), $gameWindow.height());
   // Create the ship object
@@ -105,7 +121,7 @@ function initializeBoard(){
   // On keypress run the moveShip handler
   $(document).on('keydown', moveShip);
   // Start the game loop id
-  gameLoopId = window.setInterval(gameLoop, 1000);
+  gameLoopId = window.setInterval(gameLoop, timeout);
 }
 
 // Draw the ship
@@ -137,6 +153,15 @@ function drawSlices(slices){
   });
 }
 
+// On game over display game over div
+function gameOver(){
+  // Clear all game elements
+  $ship.remove();
+  $('.slice').remove();
+  $startBtn.show();
+  $gameOver.show();
+}
+
 // Handler for the start button
 function startHandler(event){
   initializeBoard();
@@ -160,8 +185,19 @@ function moveShip(event){
 
 // Animation loop
 function gameLoop(){
+  // Move slices in game obj
   game.moveSlices(-10);
+  // Redraw slices
   drawSlices(game.slices);
+  // Add a slice once per addSliceInterval
+  if(counter % Math.round(addSliceInterval/timeout) === 0){
+    game.addSlice();
+  }
+  if(game.isOver()){
+    window.clearInterval(gameLoopId);
+    gameOver();
+  }
+  counter++;
 }
 
 $(document).ready(function(){
@@ -169,6 +205,7 @@ $(document).ready(function(){
   // Load html elements
   $gameWindow = $('#game-window');
   $startBtn = $('#start-btn');
+  $gameOver = $('#game-over');
   // On click run the start handler
   $startBtn.click(startHandler);
 
