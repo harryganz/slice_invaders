@@ -1,11 +1,12 @@
 (function() {
 'use strict';
 // Html Elements
-var $gameWindow;
-var $startBtn;
+var $gameWindow = $();
+var $startBtn = $();
 
 // Game Elements
-var $ship;
+var $ship = $();
+var $slices = $();
 
 function Ship(x, y, width, height){
   this.x = x || 0;
@@ -54,6 +55,8 @@ var game = {
     // Create a new ship and add make it this.ship
     // Place in center of board
     this.ship = new Ship(this.width/2, 0, 20, 20);
+    // Add 3 slices to slices array
+    for(var i = 0; i < 3; this.addSlice(), i++);
   },
   moveShip: function(dx){ // Move ship by dx on board
     // If ship will be off the board move to edge of board
@@ -87,8 +90,8 @@ function initializeBoard(){
   $ship = $('<div class="ship">');
   // Append the ship to the board
   $gameWindow.append($ship);
-  // Draw the ship
-  drawShip(game.ship);
+  // Draw the game
+  drawGame(game);
   // On keypress run the moveShip handler
   $(document).on('keydown', moveShip);
 }
@@ -103,9 +106,34 @@ function drawShip(ship){
   css('left', ship.x);
 }
 
+// Draw slices from game
+// Has absolute position relative to bottom left of
+// game board
+function drawSlices(slices){
+  // Remove all current slices
+  $slices.each(function($slice){
+    $slice.remove();
+  });
+  // Create new slices and add to gameWindow
+  var $newSlice;
+  slices.forEach(function(slice){
+    $newSlice = $('<div class="slice">');
+    $newSlice.
+    css('width', slice.width).
+    css('height', slice.height).
+    css('bottom', slice.y).
+    css('left', slice.x);
+    $newSlice.appendTo($gameWindow);
+    // Push to $slices collection
+    $slices.add($newSlice);
+  });
+}
+
+
 // Draw the game and all its objects
 function drawGame(game) {
   drawShip(game.ship);
+  drawSlices(game.slices);
 }
 
 // Handler for the start button
