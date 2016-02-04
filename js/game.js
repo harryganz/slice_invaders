@@ -51,6 +51,8 @@ function Projectile(x, y, width, height) {
   Movable.call(this, x, y, width, height);
 }
 
+Projectile.prototype.player = -1;
+
 Projectile.prototype = Object.create(Movable.prototype);
 
 // Game object
@@ -58,14 +60,14 @@ var game = {
   ships: [],
   slices: [],
   projectiles: [],
-  score: 0,
+  scores: [0,0],
   width: 0,
   height: 0,
   start: function(width, height){
     // Reset anything from previous game
     this.slices = [];
     this.projectiles = [];
-    this.score = 0;
+    this.scores = [0,0];
     // Set the height and width
     this.width = width || 100;
     this.height = height || 100;
@@ -112,6 +114,7 @@ var game = {
     var newProjectile = new Projectile(0, 0, 5, 5);
     newProjectile.x = this.ships[shipIndex].x + this.ships[shipIndex].width/2 - newProjectile.width/2;
     newProjectile.y = this.ships[shipIndex].height;
+    newProjectile.player = shipIndex;
     this.projectiles.push(newProjectile);
   },
   moveProjectiles: function(dy){
@@ -134,9 +137,10 @@ var game = {
         var projectileJ = this.projectiles[j];
         if((projectileJ.x >= sliceI.x && projectileJ.x < (sliceI.x + sliceI.width)) &&
           projectileJ.y >= sliceI.y) {
+            this.scores[projectileJ.player] += 10;
+            console.log(this.scores);
             this.slices.splice(this.slices.indexOf(sliceI), 1);
             this.projectiles.splice(this.projectiles.indexOf(projectileJ), 1);
-            this.score += 10;
           }
       }
     }
