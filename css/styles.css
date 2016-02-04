@@ -96,6 +96,17 @@ body {
   background-color: #00f;
 }
 
+/* Score styles */
+.score {
+  background-color: #fff;
+  padding: 0.25em;
+  color: red;
+  position: absolute;
+  top: 2%;
+  right: 10%;
+  display: none;
+}
+
 /* Game over */
 #game-over {
   width: 100%;
