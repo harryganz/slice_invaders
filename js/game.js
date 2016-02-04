@@ -105,7 +105,9 @@ var game = {
   },
   addProjectile: function(){
     // Create a new projectile in the same location as the ship
-    var newProjectile = new Projectile(this.ship.x, this.ship.y, 5, 5);
+    var newProjectile = new Projectile(0, 0, 5, 5);
+    newProjectile.x = this.ship.x + this.ship.width/2 - newProjectile.width/2;
+    newProjectile.y = this.ship.height;
     this.projectiles.push(newProjectile);
   },
   moveProjectiles: function(dy){
