@@ -117,7 +117,7 @@ var game = {
       var yAfterMove = el.y+dy;
       if(yAfterMove >= height){ // Remove projectiles that have
         // gone too far remove it
-        array.slice(index, 1);
+        array.splice(index, 1);
       } else {
         el.move(el.x, el.y+dy);
       }
@@ -243,7 +243,7 @@ function fireProjectile(event){
 function gameLoop(){
   // Move slices and projectiles in game obj
   game.moveSlices(-10);
-  game.moveProjectiles(10);
+  game.moveProjectiles(20);
   // Redraw slices and projectiles
   drawProjectiles(game.projectiles);
   drawSlices(game.slices);
