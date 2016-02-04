@@ -263,10 +263,21 @@ function drawProjectiles(projectiles){
 
 // On game over display game over div
 function gameOver(){
+  // Get the winner
+  var winner = -1;
+  if(game.scores[0] > game.scores[1]){
+    winner = 'PLAYER 1 WINS!';
+  } else if(game.scores[1] > game.scores[0]){
+    winner = 'PLAYER 2 WINS';
+  } else {
+    winner = 'IT\'S A TIE!';
+  }
+  $startBtn.text('Restart Game');
   // Clear all game elements
   shipsArray.forEach(function(ship){ship.remove();});
   $('.slice').remove();
   $('.projectile').remove();
+  $gameOver.text(winner);
   $startBtn.show();
   $gameOver.show();
 }
@@ -282,8 +293,8 @@ function gameLoop(){
   drawProjectiles(game.projectiles);
   drawSlices(game.slices);
   // Draw score
-  $score1.text('Score: ' + game.scores[0]);
-  $score2.text('Score: ' + game.scores[1]);
+  $score1.text('P1: ' + game.scores[0]);
+  $score2.text('P2: ' + game.scores[1]);
   // Add a slice once per addSliceInterval
   if(counter % Math.round(addSliceInterval/timeout) === 0){
     game.addSlice();

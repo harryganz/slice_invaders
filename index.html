@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Slice Invaders</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Press+Start+2P|Oswald' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/styles.css">
   </head>
   <body>
@@ -13,16 +14,22 @@
       </div>
       <div id="main">
         <div id="controls">
-          <h3>Controls:</h3>
+          <h3>Player 1:</h3>
           <ul class="control-list">
             <li>A: Move ship left</li>
             <li>D: Move ship right</li>
             <li>W: Fire projectile</li>
           </ul>
+          <h3>Player 2:</h3>
+          <ul class="control-list">
+            <li>Left Arrow: Move ship left</li>
+            <li>Right Arrow: Move ship right</li>
+            <li>Up Arrow: Fire projectile</li>
+          </ul>
         </div>
 
       <div id="game-window">
-        <div id="game-over"></div>
+        <div id="game-over">Game Over</div>
         <p class="score score1"></p>
         <p class="score score2"></p>
         <button id="start-btn">Start Game</button>
