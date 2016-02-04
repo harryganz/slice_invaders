@@ -55,7 +55,7 @@ Projectile.prototype = Object.create(Movable.prototype);
 
 // Game object
 var game = {
-  ship: {},
+  ships: [],
   slices: [],
   projectiles: [],
   score: 0,
@@ -71,19 +71,19 @@ var game = {
     this.height = height || 100;
     // Create a new ship and add make it this.ship
     // Place in center of board
-    this.ship = new Ship(this.width/2, 0, 20, 20);
+    this.ships[0] = new Ship(this.width/2, 0, 20, 20);
     // Add 1 slice to slices array
     this.addSlice();
   },
-  moveShip: function(dx){ // Move ship by dx on board
+  moveShip: function(dx, index){ // Move ship at index by dx on board
     // If ship will be off the board move to edge of board
-    var xAfterMove = this.ship.x + dx;
-    if(xAfterMove < 0){
-      this.ship.move(0);
-    } else if (xAfterMove > (this.width - this.ship.width)) {
-      this.ship.move(this.width - this.ship.width);
+    var xAfterMove = this.ships[index].x + dx;
+    if(xAfterMove <= 0){
+      this.ships[index].move(0);
+    } else if (xAfterMove >= (this.width - this.ships[index].width)) {
+      this.ships[index].move(this.width - this.ships[index].width);
     } else {
-      this.ship.move(xAfterMove);
+      this.ships[index].move(xAfterMove);
     }
   },
   addSlice: function(){
@@ -106,11 +106,11 @@ var game = {
       }
     });
   },
-  addProjectile: function(){
+  addProjectile: function(shipIndex){
     // Create a new projectile in the same location as the ship
     var newProjectile = new Projectile(0, 0, 5, 5);
-    newProjectile.x = this.ship.x + this.ship.width/2 - newProjectile.width/2;
-    newProjectile.y = this.ship.height;
+    newProjectile.x = this.ships[shipIndex].x + this.ships[shipIndex].width/2 - newProjectile.width/2;
+    newProjectile.y = this.ships[shipIndex].height;
     this.projectiles.push(newProjectile);
   },
   moveProjectiles: function(dy){
@@ -127,7 +127,6 @@ var game = {
     });
   },
   removeCollided: function(){
-    var result = {'slices':[], 'projectiles': []};
     for(var i = 0; i < this.slices.length; i++){
       for (var j = 0; j < this.projectiles.length; j++){
         var sliceI = this.slices[i];
@@ -163,7 +162,7 @@ function initializeBoard(){
   // Append the ship to the board
   $gameWindow.append($ship);
   // Draw the Ship
-  drawShip(game.ship);
+  drawShip(game.ships[0]);
   // Draw slices initial position
   drawSlices(game.slices);
   // On keypress run the moveShip handler
@@ -241,21 +240,21 @@ function moveShip(event){
    // a 65 d 68
    // When a is pressed move ship left by 10 pixels
    if(event.which === 65){
-     game.moveShip(-10);
+     game.moveShip(-10, 0);
    }
    // When d is pressed move ship right 10 pixel
    if(event.which === 68){
-     game.moveShip(10);
+     game.moveShip(10, 0);
    }
 
    // Draw ship again
-   drawShip(game.ship);
+   drawShip(game.ships[0]);
 }
 
 // Handler for shooting projectiles
 function fireProjectile(event){
   if(event.which === 87){
-    game.addProjectile();
+    game.addProjectile(0);
   }
 }
 
