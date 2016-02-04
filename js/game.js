@@ -10,7 +10,7 @@ var $ship = $();
 
 // Game loop info
 var gameLoopId = 0;
-var timeout = 333; //ms
+var timeout = 100; //ms
 var counter = 1;
 var addSliceInterval = 2000; //ms
 
@@ -123,6 +123,20 @@ var game = {
       }
     });
   },
+  removeCollided: function(){
+    var result = {'slices':[], 'projectiles': []};
+    for(var i = 0; i < this.slices.length; i++){
+      for (var j = 0; j < this.projectiles.length; j++){
+        var sliceI = this.slices[i];
+        var projectileJ = this.projectiles[j];
+        if((projectileJ.x >= sliceI.x && projectileJ.x < (sliceI.x + sliceI.width)) &&
+          projectileJ.y >= sliceI.y) {
+            this.slices.splice(this.slices.indexOf(sliceI), 1);
+            this.projectiles.splice(this.projectiles.indexOf(projectileJ), 1);
+          }
+      }
+    }
+  },
   isOver: function(){
     return this.slices.some(function(el){
       return el.y <= 0;
@@ -221,11 +235,11 @@ function moveShip(event){
    // a 65 d 68
    // When a is pressed move ship left by 10 pixels
    if(event.which === 65){
-     game.moveShip(-30);
+     game.moveShip(-10);
    }
    // When d is pressed move ship right 10 pixel
    if(event.which === 68){
-     game.moveShip(30);
+     game.moveShip(10);
    }
 
    // Draw ship again
@@ -242,8 +256,10 @@ function fireProjectile(event){
 // Animation loop
 function gameLoop(){
   // Move slices and projectiles in game obj
-  game.moveSlices(-10);
-  game.moveProjectiles(20);
+  game.moveSlices(-5);
+  game.moveProjectiles(10);
+  // Remove collided object
+  game.removeCollided();
   // Redraw slices and projectiles
   drawProjectiles(game.projectiles);
   drawSlices(game.slices);
