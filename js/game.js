@@ -160,7 +160,7 @@ function initializeBoard(){
   game.start($gameWindow.width(), $gameWindow.height());
   // Create the ships
   for(var i = 0; i < 2; i++){
-    shipsArray.push($('<div class="ship">'));
+    shipsArray.push($('<div class="ship ' +'ship' + (i+1) + '">'));
   }
   // Append the ship to the board
   shipsArray.forEach(function($ship){
@@ -171,10 +171,38 @@ function initializeBoard(){
   drawShips(game.ships);
   // Draw slices initial position
   drawSlices(game.slices);
-  // On keypress run the moveShip handler
-  $(document).on('keydown', moveShip);
-  // On a keypress fire projectiles
-  $(document).on('keydown', fireProjectile);
+
+  // Code from stackoverflow: http://stackoverflow.com/questions/5203407/javascript-multiple-keys-pressed-at-once
+  var map = [];
+  var onkeydown, onkeyup;
+  onkeydown = onkeyup = function(e){
+    map[e.keyCode] = e.type == 'keydown';
+    /*insert conditional here*/
+    if(map['65']){
+      game.moveShip(-10, 0);
+    }
+    if(map['68']){
+      game.moveShip(10, 0);
+    }
+    if(map['87']){
+      game.addProjectile(0);
+    }
+    if(map['37']){
+      game.moveShip(-10, 1);
+    }
+    if(map['38']){
+      game.addProjectile(1);
+    }
+    if(map['39']){
+      game.moveShip(10, 1);
+    }
+
+    drawShips(game.ships);
+  };
+
+  $(document).on('keydown', onkeydown);
+  $(document).on('keyup', onkeyup);
+
   // Start the game loop id
   gameLoopId = window.setInterval(gameLoop, timeout);
 }
@@ -231,39 +259,11 @@ function drawProjectiles(projectiles){
 // On game over display game over div
 function gameOver(){
   // Clear all game elements
-  $ship.remove();
+  shipsArray.forEach(function(ship){ship.remove();});
   $('.slice').remove();
   $('.projectile').remove();
   $startBtn.show();
   $gameOver.show();
-}
-
-// Handler for the start button
-function startHandler(event){
-  initializeBoard();
-}
-
-// Handler for pressing a and d key
-function moveShip(event){
-   // a 65 d 68
-   // When a is pressed move ship left by 10 pixels
-   if(event.which === 65){
-     game.moveShip(-10, 0);
-   }
-   // When d is pressed move ship right 10 pixel
-   if(event.which === 68){
-     game.moveShip(10, 0);
-   }
-
-   // Draw ship again
-   drawShip(game.ships[0]);
-}
-
-// Handler for shooting projectiles
-function fireProjectile(event){
-  if(event.which === 87){
-    game.addProjectile(0);
-  }
 }
 
 // Animation loop
@@ -297,7 +297,9 @@ $(document).ready(function(){
   $gameOver = $('#game-over');
   $score = $('.score');
   // On click run the start handler
-  $startBtn.click(startHandler);
+  $startBtn.click(function(event){
+    initializeBoard();
+  });
 });
 
 }());
