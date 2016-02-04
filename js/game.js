@@ -4,7 +4,8 @@
 var $gameWindow = $();
 var $startBtn = $();
 var $gameOver = $();
-var $score = $();
+var $score1 = $();
+var $score2 = $();
 
 // Game Elements
 var shipsArray = [];
@@ -138,7 +139,6 @@ var game = {
         if((projectileJ.x >= sliceI.x && projectileJ.x < (sliceI.x + sliceI.width)) &&
           projectileJ.y >= sliceI.y) {
             this.scores[projectileJ.player] += 10;
-            console.log(this.scores);
             this.slices.splice(this.slices.indexOf(sliceI), 1);
             this.projectiles.splice(this.projectiles.indexOf(projectileJ), 1);
           }
@@ -159,7 +159,8 @@ function initializeBoard(){
   // Hide gameOver div
   $gameOver.hide();
   // Show score
-  $score.show();
+  $score1.show();
+  $score2.show();
   // Run the start method of the game
   game.start($gameWindow.width(), $gameWindow.height());
   // Create the ships
@@ -281,7 +282,8 @@ function gameLoop(){
   drawProjectiles(game.projectiles);
   drawSlices(game.slices);
   // Draw score
-  $score.text('Score: ' + game.score);
+  $score1.text('Score: ' + game.scores[0]);
+  $score2.text('Score: ' + game.scores[1]);
   // Add a slice once per addSliceInterval
   if(counter % Math.round(addSliceInterval/timeout) === 0){
     game.addSlice();
@@ -299,7 +301,8 @@ $(document).ready(function(){
   $gameWindow = $('#game-window');
   $startBtn = $('#start-btn');
   $gameOver = $('#game-over');
-  $score = $('.score');
+  $score1 = $('.score.score1');
+  $score2 = $('.score.score2');
   // On click run the start handler
   $startBtn.click(function(event){
     initializeBoard();
