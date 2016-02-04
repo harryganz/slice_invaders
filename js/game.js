@@ -4,10 +4,11 @@
 var $gameWindow = $();
 var $startBtn = $();
 var $gameOver = $();
-var $score = $();
+var $score1 = $();
+var $score2 = $();
 
 // Game Elements
-var $ship = $();
+var shipsArray = [];
 
 // Game loop info
 var gameLoopId = 0;
@@ -51,39 +52,42 @@ function Projectile(x, y, width, height) {
   Movable.call(this, x, y, width, height);
 }
 
+Projectile.prototype.player = -1;
+
 Projectile.prototype = Object.create(Movable.prototype);
 
 // Game object
 var game = {
-  ship: {},
+  ships: [],
   slices: [],
   projectiles: [],
-  score: 0,
+  scores: [0,0],
   width: 0,
   height: 0,
   start: function(width, height){
     // Reset anything from previous game
     this.slices = [];
     this.projectiles = [];
-    this.score = 0;
+    this.scores = [0,0];
     // Set the height and width
     this.width = width || 100;
     this.height = height || 100;
     // Create a new ship and add make it this.ship
     // Place in center of board
-    this.ship = new Ship(this.width/2, 0, 20, 20);
+    this.ships[0] = new Ship(this.width/4, 0, 20, 20);
+    this.ships[1] = new Ship(this.width*3/4, 0, 20, 20);
     // Add 1 slice to slices array
     this.addSlice();
   },
-  moveShip: function(dx){ // Move ship by dx on board
+  moveShip: function(dx, index){ // Move ship at index by dx on board
     // If ship will be off the board move to edge of board
-    var xAfterMove = this.ship.x + dx;
-    if(xAfterMove < 0){
-      this.ship.move(0);
-    } else if (xAfterMove > (this.width - this.ship.width)) {
-      this.ship.move(this.width - this.ship.width);
+    var xAfterMove = this.ships[index].x + dx;
+    if(xAfterMove <= 0){
+      this.ships[index].move(0);
+    } else if (xAfterMove >= (this.width - this.ships[index].width)) {
+      this.ships[index].move(this.width - this.ships[index].width);
     } else {
-      this.ship.move(xAfterMove);
+      this.ships[index].move(xAfterMove);
     }
   },
   addSlice: function(){
@@ -106,11 +110,12 @@ var game = {
       }
     });
   },
-  addProjectile: function(){
+  addProjectile: function(shipIndex){
     // Create a new projectile in the same location as the ship
     var newProjectile = new Projectile(0, 0, 5, 5);
-    newProjectile.x = this.ship.x + this.ship.width/2 - newProjectile.width/2;
-    newProjectile.y = this.ship.height;
+    newProjectile.x = this.ships[shipIndex].x + this.ships[shipIndex].width/2 - newProjectile.width/2;
+    newProjectile.y = this.ships[shipIndex].height;
+    newProjectile.player = shipIndex;
     this.projectiles.push(newProjectile);
   },
   moveProjectiles: function(dy){
@@ -127,16 +132,15 @@ var game = {
     });
   },
   removeCollided: function(){
-    var result = {'slices':[], 'projectiles': []};
     for(var i = 0; i < this.slices.length; i++){
       for (var j = 0; j < this.projectiles.length; j++){
         var sliceI = this.slices[i];
         var projectileJ = this.projectiles[j];
         if((projectileJ.x >= sliceI.x && projectileJ.x < (sliceI.x + sliceI.width)) &&
           projectileJ.y >= sliceI.y) {
+            this.scores[projectileJ.player] += 10;
             this.slices.splice(this.slices.indexOf(sliceI), 1);
             this.projectiles.splice(this.projectiles.indexOf(projectileJ), 1);
-            this.score += 10;
           }
       }
     }
@@ -155,33 +159,69 @@ function initializeBoard(){
   // Hide gameOver div
   $gameOver.hide();
   // Show score
-  $score.show();
+  $score1.show();
+  $score2.show();
   // Run the start method of the game
   game.start($gameWindow.width(), $gameWindow.height());
-  // Create the ship object
-  $ship = $('<div class="ship">');
+  // Create the ships
+  for(var i = 0; i < 2; i++){
+    shipsArray.push($('<div class="ship ' +'ship' + (i+1) + '">'));
+  }
   // Append the ship to the board
-  $gameWindow.append($ship);
+  shipsArray.forEach(function($ship){
+    $ship.appendTo($gameWindow);
+  });
+  // $gameWindow.append($ships);
   // Draw the Ship
-  drawShip(game.ship);
+  drawShips(game.ships);
   // Draw slices initial position
   drawSlices(game.slices);
-  // On keypress run the moveShip handler
-  $(document).on('keydown', moveShip);
-  // On a keypress fire projectiles
-  $(document).on('keydown', fireProjectile);
+
+  // Code from stackoverflow: http://stackoverflow.com/questions/5203407/javascript-multiple-keys-pressed-at-once
+  var map = [];
+  var onkeydown, onkeyup;
+  onkeydown = onkeyup = function(e){
+    map[e.keyCode] = e.type == 'keydown';
+    /*insert conditional here*/
+    if(map['65']){
+      game.moveShip(-10, 0);
+    }
+    if(map['68']){
+      game.moveShip(10, 0);
+    }
+    if(map['87']){
+      game.addProjectile(0);
+    }
+    if(map['37']){
+      game.moveShip(-10, 1);
+    }
+    if(map['38']){
+      game.addProjectile(1);
+    }
+    if(map['39']){
+      game.moveShip(10, 1);
+    }
+
+    drawShips(game.ships);
+  };
+
+  $(document).on('keydown', onkeydown);
+  $(document).on('keyup', onkeyup);
+
   // Start the game loop id
   gameLoopId = window.setInterval(gameLoop, timeout);
 }
 
 // Draw the ship
 // Has an absolute position relative to the game board
-function drawShip(ship){
-  $ship.
-  css('width', ship.width).
-  css('height', ship.height).
-  css('bottom', 0).
-  css('left', ship.x);
+function drawShips(ships){
+  ships.forEach(function(ship, index){
+    shipsArray[index].
+    css('width', ship.width).
+    css('height', ship.height).
+    css('bottom', 0).
+    css('left', ship.x);
+  });
 }
 
 // Draw slices from game
@@ -224,39 +264,11 @@ function drawProjectiles(projectiles){
 // On game over display game over div
 function gameOver(){
   // Clear all game elements
-  $ship.remove();
+  shipsArray.forEach(function(ship){ship.remove();});
   $('.slice').remove();
   $('.projectile').remove();
   $startBtn.show();
   $gameOver.show();
-}
-
-// Handler for the start button
-function startHandler(event){
-  initializeBoard();
-}
-
-// Handler for pressing a and d key
-function moveShip(event){
-   // a 65 d 68
-   // When a is pressed move ship left by 10 pixels
-   if(event.which === 65){
-     game.moveShip(-10);
-   }
-   // When d is pressed move ship right 10 pixel
-   if(event.which === 68){
-     game.moveShip(10);
-   }
-
-   // Draw ship again
-   drawShip(game.ship);
-}
-
-// Handler for shooting projectiles
-function fireProjectile(event){
-  if(event.which === 87){
-    game.addProjectile();
-  }
 }
 
 // Animation loop
@@ -270,7 +282,8 @@ function gameLoop(){
   drawProjectiles(game.projectiles);
   drawSlices(game.slices);
   // Draw score
-  $score.text('Score: ' + game.score);
+  $score1.text('Score: ' + game.scores[0]);
+  $score2.text('Score: ' + game.scores[1]);
   // Add a slice once per addSliceInterval
   if(counter % Math.round(addSliceInterval/timeout) === 0){
     game.addSlice();
@@ -288,9 +301,12 @@ $(document).ready(function(){
   $gameWindow = $('#game-window');
   $startBtn = $('#start-btn');
   $gameOver = $('#game-over');
-  $score = $('.score');
+  $score1 = $('.score.score1');
+  $score2 = $('.score.score2');
   // On click run the start handler
-  $startBtn.click(startHandler);
+  $startBtn.click(function(event){
+    initializeBoard();
+  });
 });
 
 }());

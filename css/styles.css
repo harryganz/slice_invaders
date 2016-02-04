@@ -81,7 +81,14 @@ body {
 /* Ship styles */
 .ship {
   position: absolute;
-  background-color: #f00;
+}
+
+.ship1 {
+  background-color: red;
+}
+
+.ship2 {
+  background-color: blue;
 }
 
 /* Slice Styles */
@@ -93,18 +100,27 @@ body {
 /* Projectile Styles*/
 .projectile {
   position: absolute;
-  background-color: #00f;
+  background-color: #fff;
 }
 
 /* Score styles */
 .score {
   background-color: #fff;
   padding: 0.25em;
-  color: red;
   position: absolute;
+  display: none;
+}
+
+.score1 {
+  top: 2%;
+  left: 10%;
+  color: red;
+}
+
+.score2 {
   top: 2%;
   right: 10%;
-  display: none;
+  color: blue;
 }
 
 /* Game over */
