@@ -4,6 +4,7 @@
 var $gameWindow = $();
 var $startBtn = $();
 var $gameOver = $();
+var $score = $();
 
 // Game Elements
 var $ship = $();
@@ -12,7 +13,7 @@ var $ship = $();
 var gameLoopId = 0;
 var timeout = 100; //ms
 var counter = 1;
-var addSliceInterval = 2000; //ms
+var addSliceInterval = 3000; //ms
 
 function Movable(x, y, width, height){
   this.x = x || 0;
@@ -57,12 +58,14 @@ var game = {
   ship: {},
   slices: [],
   projectiles: [],
+  score: 0,
   width: 0,
   height: 0,
   start: function(width, height){
     // Reset anything from previous game
     this.slices = [];
     this.projectiles = [];
+    this.score = 0;
     // Set the height and width
     this.width = width || 100;
     this.height = height || 100;
@@ -86,7 +89,7 @@ var game = {
   addSlice: function(){
     // Create a new slice and place it in a random
     // place at the top of the game
-    var slice = new Slice(0, 0, 20, 20);
+    var slice = new Slice(0, 0, 40, 20);
     var randomX = Math.random()*(this.width - slice.width);
     slice.move(randomX, (this.height - slice.height));
     // Push it to the slices array
@@ -133,6 +136,7 @@ var game = {
           projectileJ.y >= sliceI.y) {
             this.slices.splice(this.slices.indexOf(sliceI), 1);
             this.projectiles.splice(this.projectiles.indexOf(projectileJ), 1);
+            this.score += 10;
           }
       }
     }
@@ -150,6 +154,8 @@ function initializeBoard(){
   $startBtn.hide();
   // Hide gameOver div
   $gameOver.hide();
+  // Show score
+  $score.show();
   // Run the start method of the game
   game.start($gameWindow.width(), $gameWindow.height());
   // Create the ship object
@@ -263,6 +269,8 @@ function gameLoop(){
   // Redraw slices and projectiles
   drawProjectiles(game.projectiles);
   drawSlices(game.slices);
+  // Draw score
+  $score.text('Score: ' + game.score);
   // Add a slice once per addSliceInterval
   if(counter % Math.round(addSliceInterval/timeout) === 0){
     game.addSlice();
@@ -280,6 +288,7 @@ $(document).ready(function(){
   $gameWindow = $('#game-window');
   $startBtn = $('#start-btn');
   $gameOver = $('#game-over');
+  $score = $('.score');
   // On click run the start handler
   $startBtn.click(startHandler);
 });
