@@ -90,6 +90,12 @@ body {
   background-color: #0f0;
 }
 
+/* Projectile Styles*/
+.projectile {
+  position: absolute;
+  background-color: #00f;
+}
+
 /* Game over */
 #game-over {
   width: 100%;
