@@ -7,7 +7,7 @@ var $gameOver = $();
 var $score = $();
 
 // Game Elements
-var $ship = $();
+var shipsArray = [];
 
 // Game loop info
 var gameLoopId = 0;
@@ -71,7 +71,8 @@ var game = {
     this.height = height || 100;
     // Create a new ship and add make it this.ship
     // Place in center of board
-    this.ships[0] = new Ship(this.width/2, 0, 20, 20);
+    this.ships[0] = new Ship(this.width/4, 0, 20, 20);
+    this.ships[1] = new Ship(this.width*3/4, 0, 20, 20);
     // Add 1 slice to slices array
     this.addSlice();
   },
@@ -157,12 +158,17 @@ function initializeBoard(){
   $score.show();
   // Run the start method of the game
   game.start($gameWindow.width(), $gameWindow.height());
-  // Create the ship object
-  $ship = $('<div class="ship">');
+  // Create the ships
+  for(var i = 0; i < 2; i++){
+    shipsArray.push($('<div class="ship">'));
+  }
   // Append the ship to the board
-  $gameWindow.append($ship);
+  shipsArray.forEach(function($ship){
+    $ship.appendTo($gameWindow);
+  });
+  // $gameWindow.append($ships);
   // Draw the Ship
-  drawShip(game.ships[0]);
+  drawShips(game.ships);
   // Draw slices initial position
   drawSlices(game.slices);
   // On keypress run the moveShip handler
@@ -175,12 +181,14 @@ function initializeBoard(){
 
 // Draw the ship
 // Has an absolute position relative to the game board
-function drawShip(ship){
-  $ship.
-  css('width', ship.width).
-  css('height', ship.height).
-  css('bottom', 0).
-  css('left', ship.x);
+function drawShips(ships){
+  ships.forEach(function(ship, index){
+    shipsArray[index].
+    css('width', ship.width).
+    css('height', ship.height).
+    css('bottom', 0).
+    css('left', ship.x);
+  });
 }
 
 // Draw slices from game
