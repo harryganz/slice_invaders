@@ -211,9 +211,11 @@ function initializeBoard(){
       }
     }
     if(map['37']){
+      event.preventDefault();
       game.moveShip(-10, 1);
     }
     if(map['38']){
+      event.preventDefault();
       if(!playerTwoFireTimeout) {
         game.addProjectile(1);
         playerTwoFireTimeout = true;
@@ -223,6 +225,7 @@ function initializeBoard(){
       }
     }
     if(map['39']){
+      event.preventDefault();
       game.moveShip(10, 1);
     }
 
