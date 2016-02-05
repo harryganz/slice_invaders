@@ -11,10 +11,14 @@ var $score2 = $();
 var shipsArray = [];
 
 // Game loop info
-var gameLoopId = 0;
-var timeout = 100; //ms
-var counter = 1;
-var addSliceInterval = 3000; //ms
+var sliceSpeed;
+var gameLoopId;
+var timeout;
+var counter;
+var addSliceInterval;
+var playerOneFireTimeout;
+var playerTwoFireTimeout;
+
 
 function Movable(x, y, width, height){
   this.x = x || 0;
@@ -154,6 +158,14 @@ var game = {
 
 // Initialize board
 function initializeBoard(){
+  // Reset all variables
+  sliceSpeed = -2; // Slice moveement per timeout
+  gameLoopId = 0;
+  timeout = 50; //ms
+  counter = 1;
+  addSliceInterval = 3000; //ms
+  playerOneFireTimeout = false;
+  playerTwoFireTimeout = false;
   // Hide the start button
   $startBtn.hide();
   // Hide gameOver div
@@ -190,15 +202,30 @@ function initializeBoard(){
       game.moveShip(10, 0);
     }
     if(map['87']){
-      game.addProjectile(0);
+      if(!playerOneFireTimeout) {
+        game.addProjectile(0);
+        playerOneFireTimeout = true;
+        window.setTimeout(function(){
+          playerOneFireTimeout = false;
+        }, 333);
+      }
     }
     if(map['37']){
+      event.preventDefault();
       game.moveShip(-10, 1);
     }
     if(map['38']){
-      game.addProjectile(1);
+      event.preventDefault();
+      if(!playerTwoFireTimeout) {
+        game.addProjectile(1);
+        playerTwoFireTimeout = true;
+        window.setTimeout(function(){
+          playerTwoFireTimeout = false;
+        }, 333);
+      }
     }
     if(map['39']){
+      event.preventDefault();
       game.moveShip(10, 1);
     }
 
@@ -285,7 +312,7 @@ function gameOver(){
 // Animation loop
 function gameLoop(){
   // Move slices and projectiles in game obj
-  game.moveSlices(-5);
+  game.moveSlices(sliceSpeed);
   game.moveProjectiles(10);
   // Remove collided object
   game.removeCollided();
@@ -298,7 +325,13 @@ function gameLoop(){
   // Add a slice once per addSliceInterval
   if(counter % Math.round(addSliceInterval/timeout) === 0){
     game.addSlice();
+    addSliceInterval *= 0.99;
   }
+  // Speed up slices once every three addSliceIntervals
+  if(counter % Math.round(addSliceInterval*3/timeout === 0)){
+    sliceSpeed *= 1.1;
+  }
+  // When game is over stop animation and run gameOver
   if(game.isOver()){
     window.clearInterval(gameLoopId);
     gameOver();
