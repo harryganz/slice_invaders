@@ -325,7 +325,7 @@ function gameLoop(){
   // Add a slice once per addSliceInterval
   if(counter % Math.round(addSliceInterval/timeout) === 0){
     game.addSlice();
-    addSliceInterval *= 0.99;
+    addSliceInterval *= 0.98;
   }
   // Speed up slices once every three addSliceIntervals
   if(counter % Math.round(addSliceInterval*3/timeout === 0)){
