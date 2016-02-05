@@ -11,10 +11,12 @@ var $score2 = $();
 var shipsArray = [];
 
 // Game loop info
+var sliceSpeed = -5; // Slice moveement per timeout
 var gameLoopId = 0;
 var timeout = 100; //ms
 var counter = 1;
 var addSliceInterval = 3000; //ms
+
 
 function Movable(x, y, width, height){
   this.x = x || 0;
@@ -285,7 +287,7 @@ function gameOver(){
 // Animation loop
 function gameLoop(){
   // Move slices and projectiles in game obj
-  game.moveSlices(-5);
+  game.moveSlices(sliceSpeed);
   game.moveProjectiles(10);
   // Remove collided object
   game.removeCollided();
@@ -298,7 +300,13 @@ function gameLoop(){
   // Add a slice once per addSliceInterval
   if(counter % Math.round(addSliceInterval/timeout) === 0){
     game.addSlice();
+    addSliceInterval *= 0.99;
   }
+  // Speed up slices once every three addSliceIntervals
+  if(counter % Math.round(addSliceInterval*3/timeout === 0)){
+    sliceSpeed *= 1.1;
+  }
+  // When game is over stop animation and run gameOver
   if(game.isOver()){
     window.clearInterval(gameLoopId);
     gameOver();
