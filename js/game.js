@@ -78,8 +78,8 @@ var game = {
     this.height = height || 100;
     // Create a new ship and add make it this.ship
     // Place in center of board
-    this.ships[0] = new Ship(this.width/4, 0, 20, 20);
-    this.ships[1] = new Ship(this.width*3/4, 0, 20, 20);
+    this.ships[0] = new Ship(this.width/4, 0, 30, 40);
+    this.ships[1] = new Ship(this.width*3/4, 0, 30, 40);
     // Add 1 slice to slices array
     this.addSlice();
   },
@@ -97,7 +97,7 @@ var game = {
   addSlice: function(){
     // Create a new slice and place it in a random
     // place at the top of the game
-    var slice = new Slice(0, 0, 40, 20);
+    var slice = new Slice(0, 0, 30, 30);
     var randomX = Math.random()*(this.width - slice.width);
     slice.move(randomX, (this.height - slice.height));
     // Push it to the slices array
@@ -159,7 +159,7 @@ var game = {
 // Initialize board
 function initializeBoard(){
   // Reset all variables
-  sliceSpeed = -2; // Slice moveement per timeout
+  sliceSpeed = -6; // Slice moveement per timeout
   gameLoopId = 0;
   timeout = 50; //ms
   counter = 1;
