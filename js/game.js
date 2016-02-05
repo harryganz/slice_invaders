@@ -159,7 +159,7 @@ var game = {
 // Initialize board
 function initializeBoard(){
   // Reset all variables
-  sliceSpeed = -2; // Slice moveement per timeout
+  sliceSpeed = -5; // Slice moveement per timeout
   gameLoopId = 0;
   timeout = 50; //ms
   counter = 1;
@@ -325,7 +325,7 @@ function gameLoop(){
   // Add a slice once per addSliceInterval
   if(counter % Math.round(addSliceInterval/timeout) === 0){
     game.addSlice();
-    addSliceInterval *= 0.99;
+    addSliceInterval *= 0.95;
   }
   // Speed up slices once every three addSliceIntervals
   if(counter % Math.round(addSliceInterval*3/timeout === 0)){
