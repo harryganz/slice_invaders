@@ -161,7 +161,7 @@ function initializeBoard(){
   // Reset all variables
   sliceSpeed = -2; // Slice moveement per timeout
   gameLoopId = 0;
-  timeout = 30; //ms
+  timeout = 50; //ms
   counter = 1;
   addSliceInterval = 3000; //ms
   playerOneFireTimeout = false;
