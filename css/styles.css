@@ -87,17 +87,20 @@ body {
 }
 
 .ship1 {
-  background-color: red;
+  background-image: url('../img/ketchup-red.png');
+  background-size: cover;
 }
 
 .ship2 {
-  background-color: blue;
+  background-image: url('../img/ketchup-blue.png');
+  background-size: cover;
 }
 
 /* Slice Styles */
 .slice {
   position: absolute;
-  background-color: #0f0;
+  background-image: url('../img/pizza.png');
+  background-size: cover;
 }
 
 /* Projectile Styles*/
