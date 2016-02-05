@@ -159,7 +159,7 @@ var game = {
 // Initialize board
 function initializeBoard(){
   // Reset all variables
-  sliceSpeed = -5; // Slice moveement per timeout
+  sliceSpeed = -6; // Slice moveement per timeout
   gameLoopId = 0;
   timeout = 50; //ms
   counter = 1;
