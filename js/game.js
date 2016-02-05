@@ -11,11 +11,13 @@ var $score2 = $();
 var shipsArray = [];
 
 // Game loop info
-var sliceSpeed = -5; // Slice moveement per timeout
-var gameLoopId = 0;
-var timeout = 100; //ms
-var counter = 1;
-var addSliceInterval = 3000; //ms
+var sliceSpeed;
+var gameLoopId;
+var timeout;
+var counter;
+var addSliceInterval;
+var playerOneFireTimeout;
+var playerTwoFireTimeout;
 
 
 function Movable(x, y, width, height){
@@ -156,6 +158,14 @@ var game = {
 
 // Initialize board
 function initializeBoard(){
+  // Reset all variables
+  sliceSpeed = -2; // Slice moveement per timeout
+  gameLoopId = 0;
+  timeout = 30; //ms
+  counter = 1;
+  addSliceInterval = 3000; //ms
+  playerOneFireTimeout = false;
+  playerTwoFireTimeout = false;
   // Hide the start button
   $startBtn.hide();
   // Hide gameOver div
@@ -192,13 +202,25 @@ function initializeBoard(){
       game.moveShip(10, 0);
     }
     if(map['87']){
-      game.addProjectile(0);
+      if(!playerOneFireTimeout) {
+        game.addProjectile(0);
+        playerOneFireTimeout = true;
+        window.setTimeout(function(){
+          playerOneFireTimeout = false;
+        }, 333);
+      }
     }
     if(map['37']){
       game.moveShip(-10, 1);
     }
     if(map['38']){
-      game.addProjectile(1);
+      if(!playerTwoFireTimeout) {
+        game.addProjectile(1);
+        playerTwoFireTimeout = true;
+        window.setTimeout(function(){
+          playerTwoFireTimeout = false;
+        }, 333);
+      }
     }
     if(map['39']){
       game.moveShip(10, 1);
