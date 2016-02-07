@@ -237,6 +237,7 @@ function initializeBoard(){
   drawGameObjs(game.slices, slicesArray, 'slice');
 
   // Add keypress listeners
+  map = [];
   $(document).on('keydown', onkeydown);
   $(document).on('keyup', onkeyup);
 
