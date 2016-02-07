@@ -296,17 +296,26 @@ function gameOver(){
   $(document).off('keyup', onkeyup);
   // Get the winner
   var winner = -1;
+  var winAnimation = 'none';
   if(game.scores[0] > game.scores[1]){
     winner = 'PLAYER 1 WINS!';
+    winAnimation = 'playerOneWins';
   } else if(game.scores[1] > game.scores[0]){
-    winner = 'PLAYER 2 WINS';
+    winner = 'PLAYER 2 WINS!';
+    winAnimation = 'playerTwoWins';
   } else {
     winner = 'IT\'S A TIE!';
+    winAnimation = 'itsATie';
   }
   // Change start button to show restart game
   $startBtn.text('Restart Game');
   // Show gameOver text and start button
   $gameOver.text(winner);
+  $gameOver.
+  css('animation-name', winAnimation).
+  css('animation-iteration-count', 1).
+  css('animation-duration', '2s').
+  css('animation-fill-mode', 'forwards');
   $startBtn.show();
   $gameOver.show();
 }

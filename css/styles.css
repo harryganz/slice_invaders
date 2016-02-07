@@ -13,7 +13,7 @@ body {
 
 .header {
   background-color: #228b22;
-  height: 6em;=
+  height: 6em;
 }
 
 .header h1 {
@@ -48,7 +48,13 @@ body {
   text-indent: -1em;
   list-style: none;
   font-size: 1.25em;
-  line-height: 1.75em;
+  line-height: 1.33em;
+}
+
+.objective {
+  margin-left: 1em;
+  font-size: 1.25em;
+  line-height: 1.33em;
 }
 
 /* Game window styles */
@@ -56,7 +62,6 @@ body {
   width: 600px;
   height: 600px;
   background-color: #000;
-  vertical-align: middle;
   position: relative;
 }
 
@@ -76,6 +81,14 @@ body {
   background-color: #228b22;
   color: #fff;
   border: 2px solid #228b22;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-name: flashText;
+}
+
+#start-btn:hover {
+  animation-name: none;
 }
 
 #start-btn:active {
@@ -142,4 +155,42 @@ body {
   text-align: center;
   top: 25%;
   position: absolute;
+}
+
+/* Flash Between White and Green*/
+@keyframes flashText {
+  from {
+    color: #228b22
+  }
+
+  to {
+    color: #fff;
+  }
+}
+
+@keyframes itsATie {
+  from {
+    color: #fff;
+  }
+  to {
+    color: #0f0;
+  }
+}
+
+@keyframes playerOneWins {
+  from {
+    color: #fff;
+  }
+  to {
+    color: #f00;
+  }
+}
+
+@keyframes playerTwoWins {
+  from {
+    color: #fff;
+  }
+  to {
+    color: #00f;
+  }
 }
