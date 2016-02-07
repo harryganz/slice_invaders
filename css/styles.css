@@ -63,6 +63,7 @@ body {
 #start-btn {
   font-family: 'Press Start 2P', sans-serif;
   font-size: 1.5em;
+  line-height: 1.25em;
   padding: 0.5em;
   border-radius: 10px;
   position: absolute;
@@ -107,6 +108,7 @@ body {
 .projectile {
   position: absolute;
   background-color: #fff;
+  border-radius: 50%;
 }
 
 /* Score styles */
@@ -134,10 +136,10 @@ body {
 #game-over {
   color: #fff;
   font-family: 'Press Start 2P', sans-serif;
+  line-height: 1.25em;
   font-size: 2em;
   width: 100%;
   text-align: center;
   top: 25%;
-  display: none;
   position: absolute;
 }
