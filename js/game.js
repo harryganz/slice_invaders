@@ -185,7 +185,7 @@ function initializeBoard(){
   });
   // $gameWindow.append($ships);
   // Draw the Ship
-  drawShips(game.ships);
+  drawObjs(game.ships, shipsArray);
   // Draw slices initial position
   drawSlices(game.slices);
 
@@ -229,7 +229,7 @@ function initializeBoard(){
       game.moveShip(10, 1);
     }
 
-    drawShips(game.ships);
+    drawObjs(game.ships, shipsArray);
   };
 
   $(document).on('keydown', onkeydown);
@@ -239,15 +239,14 @@ function initializeBoard(){
   gameLoopId = window.setInterval(gameLoop, timeout);
 }
 
-// Draw the ship
-// Has an absolute position relative to the game board
-function drawShips(ships){
-  ships.forEach(function(ship, index){
-    shipsArray[index].
-    css('width', ship.width).
-    css('height', ship.height).
-    css('bottom', 0).
-    css('left', ship.x);
+// Function to draw a Movable object in game
+function  drawObjs(gameArray, domArray){
+  gameArray.forEach(function(el, index){
+    domArray[index].
+      css('width', el.width).
+      css('height', el.height).
+      css('bottom', el.y).
+      css('left', el.x);
   });
 }
 
