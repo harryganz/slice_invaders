@@ -9,6 +9,8 @@ var $score2 = $();
 
 // Game Elements
 var shipsArray = [];
+var slicesArray = [];
+var projectilesArray = [];
 
 // Game loop info
 var sliceSpeed;
@@ -156,82 +158,85 @@ var game = {
   }
 };
 
+// Key Press Listeners
+// Code from stackoverflow: http://stackoverflow.com/questions/5203407/javascript-multiple-keys-pressed-at-once
+var map = [];
+var onkeydown, onkeyup;
+onkeydown = onkeyup = function(e){
+  map[e.keyCode] = e.type == 'keydown';
+  if(map['65']){
+    game.moveShip(-10, 0); // Move ship1 left on A
+  }
+  if(map['68']){
+    game.moveShip(10, 0); // Move ship1 right on D
+  }
+  if(map['87']){
+    if(!playerOneFireTimeout) {
+      game.addProjectile(0); // Fire ship1 on W
+      playerOneFireTimeout = true;
+      window.setTimeout(function(){
+        playerOneFireTimeout = false;
+      }, 333);
+    }
+  }
+  if(map['37']){
+    event.preventDefault(); // Prevent Scrolling
+    game.moveShip(-10, 1); // Move ship2 left on left arrow
+  }
+  if(map['38']){
+    event.preventDefault();
+    if(!playerTwoFireTimeout) {
+      game.addProjectile(1); // Fire ship2 on up arrow
+      playerTwoFireTimeout = true;
+      window.setTimeout(function(){
+        playerTwoFireTimeout = false;
+      }, 333);
+    }
+  }
+  if(map['39']){
+    event.preventDefault();
+    game.moveShip(10, 1); // Move ship2 right on right arrow
+  }
+  // Draw ships
+  drawGameObj(game.ships[0], shipsArray[0]);
+  drawGameObj(game.ships[1], shipsArray[1]);
+};
+
 // Initialize board
 function initializeBoard(){
   // Reset all variables
-  sliceSpeed = -5; // Slice moveement per timeout
+  sliceSpeed = -2; // Slice moveement per timeout
   gameLoopId = 0;
-  timeout = 50; //ms
+  timeout = 33; //ms
   counter = 1;
   addSliceInterval = 2000; //ms
   playerOneFireTimeout = false;
   playerTwoFireTimeout = false;
-  // Hide the start button
+
+  // Hide and Show Static Elements //
   $startBtn.hide();
   // Hide gameOver div
   $gameOver.hide();
   // Show score
   $score1.show();
   $score2.show();
+
   // Run the start method of the game
   game.start($gameWindow.width(), $gameWindow.height());
-  // Create the ships
-  for(var i = 0; i < 2; i++){
-    shipsArray.push($('<div class="ship ' +'ship' + (i+1) + '">'));
+
+  // Create ship DOM Elements and append to window
+  var $newShip;
+  for (var i = 0; i < game.ships.length; i++){
+    $newShip = $('<div class="ship ship' + (i+1) +'">');
+    $gameWindow.append($newShip);
+    shipsArray.push($newShip);
   }
-  // Append the ship to the board
-  shipsArray.forEach(function($ship){
-    $ship.appendTo($gameWindow);
-  });
-  // $gameWindow.append($ships);
-  // Draw the Ship
-  drawShips(game.ships);
-  // Draw slices initial position
-  drawSlices(game.slices);
+  // Show ships
+  drawGameObjs(game.ships, shipsArray, 'ship');
+  // Show original slice
+  drawGameObjs(game.slices, slicesArray, 'slice');
 
-  // Code from stackoverflow: http://stackoverflow.com/questions/5203407/javascript-multiple-keys-pressed-at-once
-  var map = [];
-  var onkeydown, onkeyup;
-  onkeydown = onkeyup = function(e){
-    map[e.keyCode] = e.type == 'keydown';
-    /*insert conditional here*/
-    if(map['65']){
-      game.moveShip(-10, 0);
-    }
-    if(map['68']){
-      game.moveShip(10, 0);
-    }
-    if(map['87']){
-      if(!playerOneFireTimeout) {
-        game.addProjectile(0);
-        playerOneFireTimeout = true;
-        window.setTimeout(function(){
-          playerOneFireTimeout = false;
-        }, 333);
-      }
-    }
-    if(map['37']){
-      event.preventDefault();
-      game.moveShip(-10, 1);
-    }
-    if(map['38']){
-      event.preventDefault();
-      if(!playerTwoFireTimeout) {
-        game.addProjectile(1);
-        playerTwoFireTimeout = true;
-        window.setTimeout(function(){
-          playerTwoFireTimeout = false;
-        }, 333);
-      }
-    }
-    if(map['39']){
-      event.preventDefault();
-      game.moveShip(10, 1);
-    }
-
-    drawShips(game.ships);
-  };
-
+  // Add keypress listeners
   $(document).on('keydown', onkeydown);
   $(document).on('keyup', onkeyup);
 
@@ -239,57 +244,55 @@ function initializeBoard(){
   gameLoopId = window.setInterval(gameLoop, timeout);
 }
 
-// Draw the ship
-// Has an absolute position relative to the game board
-function drawShips(ships){
-  ships.forEach(function(ship, index){
-    shipsArray[index].
-    css('width', ship.width).
-    css('height', ship.height).
-    css('bottom', 0).
-    css('left', ship.x);
-  });
+// Draw a single game object on DOM
+// In a corresponding dom object (element)
+function drawGameObj(gameObj, domObj){
+  domObj.
+  css('width', gameObj.width).
+  css('height', gameObj.height).
+  css('bottom', gameObj.y).
+  css('left', gameObj.x);
 }
 
-// Draw slices from game
-// Has absolute position relative to bottom left of
-// game board
-function drawSlices(slices){
-  // Remove all current slices
-  $('.slice').remove(); // TODO: refactor
-  // Create new slices and add to gameWindow
-  var $newSlice;
-  slices.forEach(function(slice){
-    $newSlice = $('<div class="slice">');
-    $newSlice.
-    css('width', slice.width).
-    css('height', slice.height).
-    css('bottom', slice.y).
-    css('left', slice.x);
-    $newSlice.appendTo($gameWindow);
+// Function to draw multiple game elements on the DOM with class type
+function drawGameObjs(gameArray, domArray, type){
+  // Hide the previous Iteration
+  domArray.forEach(function(el){
+    el.hide();
   });
-}
-
-// Draw projectiles from game
-// Has absolute position relative to the bottom left of the game
-// board
-function drawProjectiles(projectiles){
-  // Remove all current projectiles
-  $('.projectile').remove(); // TODO refactor
-  // Create new projectiles and add hem to the game window
-  projectiles.forEach(function(projectile){
-    var $newProjectile = $('<div class="projectile">');
-    $newProjectile.
-    css('width', projectile.width).
-    css('height', projectile.height).
-    css('bottom', projectile.y).
-    css('left', projectile.x);
-    $newProjectile.appendTo($gameWindow);
+  // For each element in game array, look for a corresponding element in
+  // the domArray, if it exists draw it in the new location. If not make a new
+  // element and draw it there
+  var nGameObj = gameArray.length;
+  gameArray.forEach(function(el, index, array){
+    if(domArray[index]){
+      drawGameObj(el, domArray[index]);
+    } else {
+      var $newObj = $('<div class="' + type + '">'); // Create a new obj
+      drawGameObj(el, $newObj); // Set its properties
+      $newObj.appendTo($gameWindow);
+      domArray.push($newObj);
+    }
+    // Show all elements in the domArray that are in gameArray
+    domArray.slice(0, nGameObj).forEach(function(el){
+      el.show();
+    });
   });
 }
 
 // On game over display game over div
+// And clear all game elements
 function gameOver(){
+  // Clear all game elements
+  shipsArray.forEach(function(ship){ship.remove();});
+  shipsArray = [];
+  slicesArray.forEach(function(slice){slice.remove();});
+  slicesArray = [];
+  projectilesArray.forEach(function(proj){proj.remove();});
+  projectilesArray = [];
+  // Clear event listeners
+  $(document).off('keydown', onkeydown);
+  $(document).off('keyup', onkeyup);
   // Get the winner
   var winner = -1;
   if(game.scores[0] > game.scores[1]){
@@ -299,11 +302,9 @@ function gameOver(){
   } else {
     winner = 'IT\'S A TIE!';
   }
+  // Change start button to show restart game
   $startBtn.text('Restart Game');
-  // Clear all game elements
-  shipsArray.forEach(function(ship){ship.remove();});
-  $('.slice').remove();
-  $('.projectile').remove();
+  // Show gameOver text and start button
   $gameOver.text(winner);
   $startBtn.show();
   $gameOver.show();
@@ -316,9 +317,9 @@ function gameLoop(){
   game.moveProjectiles(10);
   // Remove collided object
   game.removeCollided();
-  // Redraw slices and projectiles
-  drawProjectiles(game.projectiles);
-  drawSlices(game.slices);
+  // Redraw slices, projectiles, and ships
+  drawGameObjs(game.projectiles, projectilesArray, 'projectile');
+  drawGameObjs(game.slices, slicesArray, 'slice');
   // Draw score
   $score1.text('P1: ' + game.scores[0]);
   $score2.text('P2: ' + game.scores[1]);
